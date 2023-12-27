@@ -5,7 +5,7 @@ import pandas as pd
 from tqdm import tqdm
 from utls import get_json_from_url, convert_numeric, get_latest_season_year
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 TEAM_IDS = {
     "巨人": 1,
@@ -84,18 +84,24 @@ def get_player_stats(id_list: list[str], save_path: str):
         player_dict = {"name": json_data[0]["Name"], "stats": {}}
 
         for seasonal_stat in json_data:
-            year = int(seasonal_stat["Year"])
             stats = {}
             for metric in metrics:
-                stats[metric] = convert_numeric(seasonal_stat[metric])
-            player_dict['stats'][year] = stats
+                val = seasonal_stat[metric]
+                if "ID" in metric or "CD" in metric:
+                    stats[metric] = val
+                elif val == "-":
+                    stats[metric] = None
+                else:
+                    stats[metric] = convert_numeric(val)
+            player_dict['stats'][seasonal_stat["Year"]] = stats
 
         organized_data[player_id] = player_dict
 
     logging.info("Data extracted")
 
-    with open(save_path, "w") as json_file:
-        json.dump(organized_data, json_file, indent=4)
+    if save_path: # save if save_path is non-empty
+        with open(save_path, "w") as json_file:
+            json.dump(organized_data, json_file, indent=4)
 
 
 if __name__ == "__main__":
