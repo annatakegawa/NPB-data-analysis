@@ -164,3 +164,8 @@ test*
 
 # VS Code Counter
 .VSCodeCounter*
+
+# extracted data
+schedules/
+standings/
+player_stats/
