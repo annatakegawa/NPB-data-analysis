@@ -49,32 +49,8 @@ def get_player_stats(id_list: list[str], save_path: str):
     "get player's data for all available seasons"
     logging.info("Get player stats")
 
-    metrics = [
-        "TeamCD",
-        "BattingAverage",
-        "Game",
-        "PlateAppearance",
-        "AtBat",
-        "Run",
-        "Hit",
-        "Double",
-        "Triple",
-        "Homerun",
-        "Base",
-        "RunsBattingIn",
-        "StrikeOut",
-        "BaseOnBall",
-        "HitByPitch",
-        "SacrificeHit",
-        "SacrificeFly",
-        "StolenBase",
-        "CaughtStealing",
-        "DoublePlay",
-        "Error",
-        "Slugging",
-        "OnBase",
-        "Ops"
-    ]
+    with open("../batter_metrics.json", "r") as file:
+        metrics = json.load(file)
 
     organized_data = {}
     
