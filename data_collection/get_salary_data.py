@@ -27,7 +27,7 @@ def create_team_dict() -> dict:
     return team_dict
 
 
-def create_player_data_df(url: str, save_path: str) -> pd.DataFrame:
+def create_player_data_df(url: str, team_name: str) -> pd.DataFrame:
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     table = soup.find('table', class_ = 'ResultTable02b')
@@ -52,21 +52,23 @@ def create_player_data_df(url: str, save_path: str) -> pd.DataFrame:
     num_cols = df.columns[2:]
     df[num_cols] = df[num_cols].apply(pd.to_numeric, errors='coerce')
 
-    if save_path:
-        df.to_csv(save_path)
+    df['チーム名'] = team_name
 
     return df
 
 
-def get_salary_data(team_dict: dict):
+def get_salary_data(team_dict: dict, position: str):
+    team_dfs = []
     for team_name, team_info in team_dict.items():
         team_url = team_info['url']
-        for position in ['pitcher', 'batter']:
-            url = f'https://sp.baseball.findfriends.jp{team_url}2023/{position}/'
-            save_path = os.path.join('data_collection/salaries/', f'{team_name}_{position}.csv')
-            create_player_data_df(url, save_path)
+        url = f'https://sp.baseball.findfriends.jp{team_url}2023/{position}/'
+        team_data = create_player_data_df(url, team_name)
+        team_dfs.append(team_data)
+    combined_df = pd.concat(team_dfs, ignore_index=True)
+    save_path = os.path.join('data_collection/salaries/', f'{position}.csv')
+    combined_df.to_csv(save_path)
 
 
 if __name__ == '__main__':
     team_dict = create_team_dict()
-    get_salary_data(team_dict)
+    get_salary_data(team_dict, "batter")
