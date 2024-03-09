@@ -3,3 +3,5 @@ tqdm
 requests
 pyarrow
 fastparquet
+seaborn
+japanize_matplotlib
