@@ -1,5 +1,3 @@
-# NPB Data Analysis
+# NPB Moneyball Analysis
 
-Based on [Nippon-Bbaseball-Data-Repository](https://github.com/armstjc/Nippon-Baseball-Data-Repository).
-
-Analyzes players' stats across multiple seasons to determine the source of fluctuations in team performance.
+Applying analysis presented in the movie "Moneyball" to teams in NPB, including spending efficiency per win and on-base percentage, to determine cost-effectiveness of team and player.
