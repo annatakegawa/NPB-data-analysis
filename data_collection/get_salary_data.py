@@ -21,7 +21,7 @@ def create_team_dict() -> dict:
         for link, name in zip(team_links, team_names):
             team_dict[name] = {
                 'url': link,
-                'league': 'セ' if league_name == 'セ･リーグ' else 'パ'
+                'league': 'C' if league_name == 'セ･リーグ' else 'P'
             }
     
     return team_dict
@@ -52,23 +52,27 @@ def create_player_data_df(url: str, team_name: str) -> pd.DataFrame:
     num_cols = df.columns[2:]
     df[num_cols] = df[num_cols].apply(pd.to_numeric, errors='coerce')
 
-    df['チーム名'] = team_name
+    df['チーム'] = team_name
 
     return df
 
 
-def get_salary_data(team_dict: dict, position: str):
+def get_salary(team_dict: dict, year: int, position: str):
     team_dfs = []
     for team_name, team_info in team_dict.items():
         team_url = team_info['url']
-        url = f'https://sp.baseball.findfriends.jp{team_url}2023/{position}/'
+        url = f'https://sp.baseball.findfriends.jp{team_url}{year}/{position}/'
         team_data = create_player_data_df(url, team_name)
         team_dfs.append(team_data)
     combined_df = pd.concat(team_dfs, ignore_index=True)
-    save_path = os.path.join('data_collection/salaries/', f'{position}.csv')
+    save_path = os.path.join('data_collection/salaries/', f'{year}_{position}.csv')
     combined_df.to_csv(save_path)
 
 
 if __name__ == '__main__':
     team_dict = create_team_dict()
-    get_salary_data(team_dict, "batter")
+    for year in range(2020, 2023 + 1):
+        print(f'--- Getting batter data for', year, ' ---')
+        get_salary(team_dict, year, 'batter')
+        print(f'--- Getting pitcher data for', year, ' ---')
+        get_salary(team_dict, year, 'pitcher')
