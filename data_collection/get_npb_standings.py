@@ -47,7 +47,7 @@ def get_final_standing(season: int, save_results=False):
     df = df.drop('GameAssortment', axis=1)
 
     if save_results == True:
-        df.to_csv(f'standings/{season}_final_standings.csv', index=False)
+        df.to_csv(f'data_collection/standings/{season}_final_standings.csv', index=False)
 
     return df
 
@@ -61,5 +61,6 @@ if __name__ == "__main__":
         #     season=i,
         #     save_results=True
         # )
-    df = get_final_standing(season=2023, save_results=True)
-    print(df)
+    for year in range(2019, 2023 + 1):
+        print('--- Getting results for ', year, '---')
+        df = get_final_standing(season=year, save_results=True)
